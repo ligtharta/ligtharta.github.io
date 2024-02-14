@@ -1,0 +1,121 @@
+<html>
+
+<head>
+<title>Foto van de dag</title>
+<script type="text/javascript" src="fotos.js"></script>
+<style type="text/css">
+	body {background-image:url('archief.png'); background-repeat:repeat; margin:0px;font-family:arial;}
+	img { border: 5px solid #ff80c0; }
+	h3 { font-size: 16px; margin:0px; line-height:28px; }
+	#navbar {background-color:#ffbaf9; padding: 4px; font-family:verdana;font-size:12px;border-bottom:1px solid #ff5abe; }
+	#navbar select {margin-bottom: 5px; font-family:verdana;font-size:12px; }
+	#navbar a { color:#ff5abe;font-weight:bold;}
+	#footer {font-family:verdana;font-size:10px; }
+</style>
+</head>
+
+<body>
+
+<div align="center">
+	<div id="navbar">
+		<select id="monthSelector" onchange="setMonth(this.value)"></select>&nbsp;&nbsp;
+		<br />
+		<a id="vorige" href="javascript:setPhoto(-1)">&lt;&lt;&lt;&nbsp;Vorige</a>&nbsp;&nbsp;
+		<span id="datum"></span>
+		&nbsp;&nbsp;<a id="volgende" href="javascript:setPhoto(1)">volgende&nbsp;&gt;&gt;&gt;</a>
+	</div>
+	<h3 id="titel"></h3><img id="foto" />
+	<div id="footer">Op de 15e dag van elke maand worden de foto's van de maand ervoor vrijgegeven.<br />
+Foto's van de afgelopen weken zijn dus nog niet via het archief zichtbaar.<br />
+Dus blijven kijken naar de foto van de dag he?
+	</div>
+
+</div>
+<br/><br/><br/><br/><br/><br/><br/><br/><br/>
+
+<script type="text/javascript">
+
+var idx;
+var now = new Date();
+var month = now.getMonth()+1;
+var day = now.getDate();
+var year = now.getYear();
+year = (year < 1000) ? year + 1900 : year;
+var dateKey = (year*10000)+(month*100)+day;
+
+var months = new Array("Januari","Februari","Maart","April","Mei","Juni","Juli","Augustus","September","Oktober","November","December");
+
+var firstMonth = parseInt(fotoArray[0] / 100);
+month--; if (month==0) { month=12; year--; }
+if (day<15) {month--; if (month==0) { month=12; year--; }}
+var lastMonth = Math.min( (year*100)+month, 201703 ); // last month is March-2017
+
+month=firstMonth;
+var monthSelector = document.getElementById("monthSelector");
+while (monthSelector.hasChildNodes()) { monthSelector.removeChild(monthSelector.firstChild); }
+
+while (month <= lastMonth)
+{
+	var monthYearTxt = months[(month % 100)-1] + " " + parseInt(month/100);
+	var newOption = document.createElement("option");
+	newOption.value = month;
+	newOption.innerHTML = monthYearTxt;
+	if (month == lastMonth) { newOption.selected = true;}
+	monthSelector.appendChild(newOption);
+	month++;
+	if (month % 100 == 13) month += 88;
+}
+
+
+setMonth(lastMonth);
+
+
+function setMonth(month)
+{
+	idx = 0;
+	while (parseInt(fotoArray[idx] / 100) < month) idx+=3;
+	setPhoto(0);
+}
+
+function setPhoto(add)
+{
+	idx += (add*3);
+	var datumElement = document.getElementById("datum");
+	var titelElement = document.getElementById("titel");
+	var fotoElement = document.getElementById("foto");
+
+	var datum = fotoArray[idx];
+	var strMonth = months[(parseInt(datum/100)%100)-1].toLowerCase();
+	var datumTxt = (datum % 100) + " " + strMonth + " " + parseInt(datum/10000);
+	datumElement.innerHTML = datumTxt;
+
+	titelElement.innerHTML = fotoArray[idx+2];
+	fotoElement.src = getImageUrl(fotoArray[idx+1]);
+	EnableNavButtons();
+}
+
+function EnableNavButtons()
+{
+	var vorigeElement = document.getElementById("vorige");
+	var volgendeElement = document.getElementById("volgende");
+	var visibility = "hidden";
+	if (idx >= 3) { if (parseInt(fotoArray[idx-3] / 100) == parseInt(fotoArray[idx] / 100)) visibility="visible"; }
+	vorigeElement.style.visibility = visibility;
+	visibility = "hidden";
+	if (idx < fotoArray.length) { if (parseInt(fotoArray[idx+3] / 100) == parseInt(fotoArray[idx] / 100)) visibility="visible"; }
+	volgendeElement.style.visibility = visibility;
+}
+
+function getImageUrl(filename)
+{
+ if (filename.indexOf(".") >= 0) return filename;
+ if (filename.length <= 9) return "http://www.mijnalbum.nl/GroteFoto-" + filename + ".jpg";
+ return "http://myalbum.com/photo/" + filename + "/1k0.jpg";
+
+}
+
+</script>
+
+</body>
+
+</html>

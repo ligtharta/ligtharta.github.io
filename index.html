@@ -1,1 +1,90 @@
-"Hello World" 
+<html>
+
+<head>
+<meta http-equiv="cache-control" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta http-equiv="Pragma" content="no-cache">
+
+<title>Foto van de dag</title>
+<script id="jsFile" type="text/javascript" src="fotos.js"></script>
+<style type="text/css">
+	body {background: #ffa0e0; margin:0px;font-family:arial;}
+	img { border: 5px solid #ff80c0; }
+	h3 { font-size: 16px; margin:0px; line-height:28px; }
+	div#reageer { color:#601038; font-size:12px; margin:0px;}
+	div#reageer a { color:#601038; }
+	div#harlaar { color:#601038; font-size: 11px; margin-top: 5px; }
+	div#harlaar a { color:#601038; }
+	div#archief { background-color:#eeeeee; font-family:verdana; font-size:12px; padding: 3px;}
+</style>
+</head>
+
+<body>
+
+<div align="center">
+	<div id="archief">Oude foto's inzien in het archief. <a href="archief.html">Klik hier!</a></div>
+	<h3 onClick="changeDay();" id="titel"></h3><img id="foto" /><div id="reageer">reageer:
+	<a href="mailto:aniekligthart@gmail.com?SUBJECT=Foto van de dag">aniekligthart@gmail.com</a></div>
+    <br />
+	<div id="harlaar">Bezoek ook de film v.d. week (Dion en Yara): <a href="http://www.harlaar.eu">www.harlaar.eu</a></div>
+</div>
+<br/><br/><br/><br/><br/><br/><br/><br/><br/>
+
+<script type="text/javascript">
+
+var offset = 0;
+var now = new Date();
+//alert(top.window.location);
+
+document.getElementById("jsFile").setAttribute("src", "fotos.js?day=" + now.getDate() );
+
+if (window.location.search.substring(1) != "")
+{
+  offset = parseInt(window.location.search.substring(1));
+  now.setDate(now.getDate()+offset);
+}
+
+//now = new Date(2010,2,20);
+var month = now.getMonth()+1;
+var day = now.getDate();
+var year = now.getYear();
+year = (year < 1000) ? year + 1900 : year;
+var dateKey = (year*10000)+(month*100)+day;
+
+
+
+var i=0;
+while ((i+3) < fotoArray.length && fotoArray[i] < dateKey) i+=3;
+if (fotoArray[i] > dateKey && i>=3) i-=3;
+
+var filename = fotoArray[i+1];
+var txt = fotoArray[i+2];
+document.getElementById('titel').innerHTML = "Foto van de dag: " + txt;
+document.getElementById('foto').src= getImageUrl(filename);
+
+function changeDay()
+{
+ if (!window.event) return;
+ var evt = window.event;
+ if (!evt.shiftKey) return;
+ offset += (evt.ctrlKey?-1:1);
+ var newUrl = window.location.href.split("?")[0] + "?" + offset;
+ window.location.href = newUrl;
+}
+
+function getImageUrl(filename)
+{
+    if (filename.indexOf(".") >= 0) return filename;
+    if (filename.length <= 9) return "http://www.mijnalbum.nl/GroteFoto-" + filename + ".jpg";
+    return "http://myalbum.com/photo/" + filename + "/1k0.jpg";
+}
+
+</script>
+
+</body>
+
+<head> 
+<meta http-equiv="Pragma" content="no-cache">
+</head> 
+
+</html>
