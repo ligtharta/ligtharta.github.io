@@ -35,6 +35,8 @@ Dus blijven kijken naar de foto van de dag he?
 
 <script type="text/javascript">
 
+const isNumber = str => ! isNaN(Number(str));
+
 var idx;
 var now = new Date();
 var month = now.getMonth()+1;
@@ -66,9 +68,27 @@ while (month <= lastMonth)
 	if (month % 100 == 13) month += 88;
 }
 
+if (window.location.search.substring(1) != "")
+{
+  searchStr = window.location.search.substring(1);
+  if(isNumber(searchStr) && searchStr.length == 8) {
+	num = parseInt(searchStr);
+	month = Math.floor(num / 100);
+	setMonthAndDay(month, num % 100);	
+	document.getElementById('monthSelector').value=month;
+  }
+  else {
+	setMonth(lastMonth);
+  }
+}
 
-setMonth(lastMonth);
-
+function setMonthAndDay(month, day) 
+{
+	idx = 0;
+	while (parseInt(fotoArray[idx] / 100) < month) idx+=3;
+	while (parseInt(fotoArray[idx] % 100) != day) idx+=3;
+	setPhoto(0);
+}
 
 function setMonth(month)
 {
@@ -113,6 +133,7 @@ function getImageUrl(filename)
  return "http://myalbum.com/photo/" + filename + "/1k0.jpg";
 
 }
+
 
 </script>
 
