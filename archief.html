@@ -77,10 +77,11 @@ if (window.location.search.substring(1) != "")
 	setMonthAndDay(month, num % 100);	
 	document.getElementById('monthSelector').value=month;
   }
-  else {
-	setMonth(lastMonth);
-  }
 }
+else {
+	setMonth(lastMonth);
+}
+
 
 function setMonthAndDay(month, day) 
 {
